@@ -7,7 +7,7 @@ class TicTacToe
     def initialize
         self.symbol_selection
         self.game_loop
-
+        self.play_again?
     end
 
     protected
@@ -30,7 +30,7 @@ class TicTacToe
             player1_move = gets.chomp.to_i
             player1.moves.push(player1_move)
             self.board.update_display(self.player1.symbol, player1_move)
-            break if self.board.check_for_winner(self.player1.moves)
+            break if self.board.check_for_winner(self.player1.moves, "Player 1")
             self.board.clear_display
             
 
@@ -39,8 +39,21 @@ class TicTacToe
             player2_move = gets.chomp.to_i
             player2.moves.push(player2_move)
             self.board.update_display(self.player2.symbol, player2_move)
-            break if self.board.check_for_winner(self.player2.moves)
+            break if self.board.check_for_winner(self.player2.moves, "Player 2" )
             self.board.clear_display
+        end
+    end
+
+    def play_again?
+        print "Play again? (Y/N): "
+        answer = gets.chomp.upcase
+        if answer == 'Y'
+            self.player1.moves = []
+            self.player2.moves = []
+            self.game_loop
+            self.play_again?
+        else
+            puts "Thanks for playing!"
         end
     end
 
