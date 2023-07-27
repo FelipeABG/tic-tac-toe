@@ -1,65 +1,49 @@
+require_relative "board"
+require_relative "player"
+
 class TicTacToe 
     attr_accessor :player1, :player2, :board
 
     def initialize
-        @board = Board.new
-        self.game_start
+        self.symbol_selection
+        self.game_loop
 
     end
 
+    protected
 
-    def game_start
+    def symbol_selection
         puts "Welcome to Tic Tac Toe!"
         print "Player 1, please choose your symbol: "
         symbol = gets.chomp.upcase
         self.player1 = Player.new(symbol)
+        self.player1.symbol == 'X' ? self.player2 = Player.new('O') : self.player2 = Player.new('X')
 
-        if self.player1.symbol == "X"
-            self.player2 = Player.new("O")
-        else
-            self.player2 = Player.new("X")
+    end
+
+    def game_loop
+        self.board = Board.new
+        self.board.clear_display
+        while true
+            self.board.display 
+            print "Player 1, choose your move (1 to 9):  "
+            player1_move = gets.chomp.to_i
+            player1.moves.push(player1_move)
+            self.board.update_display(self.player1.symbol, player1_move)
+            break if self.board.check_for_winner(self.player1.moves)
+            self.board.clear_display
+            
+
+            self.board.display
+            print "Player 2, choose your move (1 to 9):  "
+            player2_move = gets.chomp.to_i
+            player2.moves.push(player2_move)
+            self.board.update_display(self.player2.symbol, player2_move)
+            break if self.board.check_for_winner(self.player2.moves)
+            self.board.clear_display
         end
     end
-end
-
-class Board
-    @@COMBOS = [
-        [1,2,3], [4,5,6], [7,8,9], 
-
-        [1,4,7], [2,5,8], [3,6,9], 
-
-        [1,5,9], [3,5,7] 
-    ]
-
-    def initialize
-        @positions = [1,2,3,4,5,6,7,8,9]
-    end
-
-    def display
-        puts "
-        #{@positions[0]} | #{@positions[1]} | #{@positions[2]}
-       ---+---+---
-        #{@positions[3]} | #{@positions[4]} | #{@positions[5]}
-       ---+---+---
-        #{@positions[6]} | #{@positions[7]} | #{@positions[8]}
-        "
-   end
-
-    def update_display(symbol, position)
-        @positions[position - 1] = symbol
-        self.display()
-    end
 
 end
 
-class Player
-    attr_accessor :moves
-    attr_reader :symbol
-    def initialize(symbol)
-        @symbol = symbol
-        @moves = []
-    end
-end 
-
-
-game = TicTacToe.new
+TicTacToe.new
